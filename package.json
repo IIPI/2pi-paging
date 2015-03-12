@@ -1,0 +1,22 @@
+{
+  "name": "paging",
+  "version": "1.0.0",
+  "description": "Paging utility",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IIPI/paging.git"
+  },
+  "author": "Giulian Drimba",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IIPI/paging/issues"
+  },
+  "homepage": "https://github.com/IIPI/paging",
+  "dependencies": {
+    "happens": "^0.5.0"
+  }
+}
