@@ -1,5 +1,5 @@
 {
-  "name": "paging",
+  "name": "2pi-paging",
   "version": "1.0.0",
   "description": "Paging utility",
   "main": "src/index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IIPI/paging.git"
+    "url": "https://github.com/IIPI/2pi-paging.git"
   },
   "author": "Giulian Drimba",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/IIPI/paging/issues"
+    "url": "https://github.com/IIPI/2pi-paging/issues"
   },
-  "homepage": "https://github.com/IIPI/paging",
+  "homepage": "https://github.com/IIPI/2pi-paging",
   "dependencies": {
     "happens": "^0.5.0"
   }
