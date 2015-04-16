@@ -4,9 +4,9 @@ var happens = require("happens");
 
 var pages = [];
 var pageIndex = 0;
-var currentPageIndex = 0
 var data = undefined;
-
+var currentPageIndex = 0
+var currentPage = undefined
 var options = {
   itemsPerPage: 1
 };
@@ -15,8 +15,14 @@ var api = {};
 
 module.exports = function(items, opts)
 {
+  data = [];
   data = items;
   happens(api);
+
+  pages = [];
+  pageIndex = 0;
+  currentPageIndex = 0
+  currentPage = undefined
 
   if(opts && opts.itemsPerPage)
     options.itemsPerPage = opts.itemsPerPage
@@ -26,6 +32,7 @@ module.exports = function(items, opts)
   api.next = next;
   api.prev = prev;
   api.go = go;
+  api.getPages = getPages
 
   return api;
 }
@@ -33,16 +40,23 @@ module.exports = function(items, opts)
 function createPages()
 {
   var dataLength = data.length;
-
+  var count = 0;
   pages[pageIndex] = []
 
   for(var i = 0; i < dataLength; i++)
   {
-    if(i > 0 && i % options.itemsPerPage === 0)
+    if(i > 0)
     {
-      pageIndex++
-      pages[pageIndex] = []
+      count++;
+
+      if(count % options.itemsPerPage == 0)
+      {
+        count = 0;
+        pageIndex++
+        pages[pageIndex] = []
+      }
     }
+
     pages[pageIndex].push(data[i]);
   }
 
@@ -84,4 +98,9 @@ function go(at)
   checkNextPrev()
   api.emit("change", pages[currentPageIndex], currentPageIndex);
   api.emit("go", pages[currentPageIndex], currentPageIndex);
+}
+
+function getPages()
+{
+  return pages;
 }
