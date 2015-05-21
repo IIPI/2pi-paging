@@ -2,105 +2,120 @@
 
 var happens = require("happens");
 
-var pages = [];
-var pageIndex = 0;
-var data = undefined;
-var currentPageIndex = 0
-var currentPage = undefined
-var options = {
-  itemsPerPage: 1
-};
-
-var api = {};
-
 module.exports = function(items, opts)
 {
-  data = [];
-  data = items;
+  var api = {};
+  api.pages = [];
+  api.pageIndex = 0;
+  api.data = items;
+  api.currentPageIndex = 0
+  api.currentPage = undefined
+  api.options = {
+    itemsPerPage: 1,
+    loop: false
+  };
+
   happens(api);
 
-  pages = [];
-  pageIndex = 0;
-  currentPageIndex = 0
-  currentPage = undefined
-
-  if(opts && opts.itemsPerPage)
-    options.itemsPerPage = opts.itemsPerPage
-
-  createPages();
-
-  api.next = next;
-  api.prev = prev;
-  api.go = go;
-  api.getPages = getPages
-
-  return api;
-}
-
-function createPages()
-{
-  var dataLength = data.length;
-  var count = 0;
-  pages[pageIndex] = []
-
-  for(var i = 0; i < dataLength; i++)
+  if(opts)
   {
-    if(i > 0)
-    {
-      count++;
+    if(opts.itemsPerPage)
+      api.options.itemsPerPage = opts.itemsPerPage
 
-      if(count % options.itemsPerPage == 0)
+    if(opts.loop != undefined)
+      api.options.loop = opts.loop
+  }
+
+  api.hasNext = function()
+  {
+    return (api.currentPageIndex < api.pages.length - 1)
+  }
+
+  api.hasPrev = function()
+  {
+    return (api.currentPageIndex > 0)
+  }
+
+  api.createPages = function()
+  {
+    var dataLength = api.data.length;
+    var count = 0;
+    api.pages[api.pageIndex] = [];
+
+    for(var i = 0; i < dataLength; i++)
+    {
+      if(i > 0)
       {
-        count = 0;
-        pageIndex++
-        pages[pageIndex] = []
+        count++;
+
+        if(count % api.options.itemsPerPage == 0)
+        {
+          count = 0;
+          api.pageIndex++
+          api.pages[api.pageIndex] = []
+        }
+      }
+
+      api.pages[api.pageIndex].push(api.data[i]);
+    }
+
+    api.totalPages = api.pages.length;
+  }
+
+  api.next = function()
+  {
+    api.currentPageIndex++
+    api.checkNextPrev()
+    api.emit("change", api.pages[api.currentPageIndex], api.currentPageIndex);
+    api.emit("next", api.pages[api.currentPageIndex], api.currentPageIndex);
+  }
+
+  api.prev = function()
+  {
+    api.currentPageIndex--
+    api.checkNextPrev()
+    api.emit("change", api.pages[api.currentPageIndex], api.currentPageIndex);
+    api.emit("prev", api.pages[api.currentPageIndex], api.currentPageIndex);
+  }
+
+  api.checkNextPrev = function()
+  {
+    if(api.currentPageIndex > api.pages.length - 1)
+    {
+      if(api.options.loop)
+      {
+        api.currentPageIndex = 0;
+      }
+      else
+      {
+        api.currentPageIndex = api.pages.length - 1;
+        api.emit("last:next");
       }
     }
 
-    pages[pageIndex].push(data[i]);
+    if(api.currentPageIndex < 0)
+    {
+      if(api.options.loop)
+      {
+        api.currentPageIndex = api.pages.length - 1;
+      }
+      else
+      {
+        api.currentPageIndex = 0;
+        api.emit("last:prev");
+      }
+    }
   }
 
-  api.totalPages = pages.length;
-}
-
-function next()
-{
-  currentPageIndex++
-  checkNextPrev()
-  api.emit("change", pages[currentPageIndex], currentPageIndex);
-  api.emit("next", pages[currentPageIndex], currentPageIndex);
-}
-
-function prev()
-{
-  currentPageIndex--
-  checkNextPrev()
-  api.emit("change", pages[currentPageIndex], currentPageIndex);
-  api.emit("prev", pages[currentPageIndex], currentPageIndex);
-}
-
-function checkNextPrev()
-{
-  if(currentPageIndex > pages.length - 1)
+  api.go = function(at)
   {
-    currentPageIndex = 0;
+    api.currentPageIndex = at;
+    api.checkNextPrev()
+    api.emit("change", api.pages[api.currentPageIndex], api.currentPageIndex);
+    api.emit("go", api.pages[api.currentPageIndex], api.currentPageIndex);
   }
 
-  if(currentPageIndex < 0)
-  {
-    currentPageIndex = pages.length - 1;
-  }
-}
+  api.createPages();
 
-function go(at)
-{
-  currentPageIndex = at;
-  checkNextPrev()
-  api.emit("change", pages[currentPageIndex], currentPageIndex);
-  api.emit("go", pages[currentPageIndex], currentPageIndex);
-}
-
-function getPages()
-{
-  return pages;
+  return api;
 }
