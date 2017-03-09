@@ -1,22 +1,26 @@
 {
-  "name": "2pi-paging",
-  "version": "1.2.0",
-  "description": "Paging utility",
-  "main": "src/index.js",
+  "name": "@doublepi/paging",
+  "version": "1.0.0",
+  "description": "Pagination utility",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/IIPI/2pi-paging.git"
+    "url": "git+https://github.com/doublepi/paging.git"
   },
+  "keywords": [
+    "pagination",
+    "javascript"
+  ],
   "author": "Giulian Drimba",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/IIPI/2pi-paging/issues"
+    "url": "https://github.com/doublepi/paging/issues"
   },
-  "homepage": "https://github.com/IIPI/2pi-paging",
+  "homepage": "https://github.com/doublepi/paging#readme",
   "dependencies": {
-    "happens": "^0.5.0"
+    "happens": "^0.6.0"
   }
 }
